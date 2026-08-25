@@ -12,12 +12,20 @@
 //
 // console.log(city);
 
-const name = 'John';
+// const name = 'John';
+//
+// const user = {
+//     name: 'Ramis'
+// };
+//
+// user.name = 'Alex';
+//
+// console.log(user.name);
 
-const user = {
-    name: 'Ramis'
-};
 
-user.name = 'Alex';
+let message = 'Hello';
+console.log(message);
 
-console.log(user.name);
+console.log(typeof null  );
+
+
