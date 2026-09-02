@@ -19,4 +19,4 @@ let total = 0;
 for (let i = 0; i < salaries.length; i++) {
     total += salaries[i];
 }
-console.log('Средняя: ' + (total / salaries.length) + ' тг');
+console.log('Средняя: ' + (total / salaries.length) + ' тг')

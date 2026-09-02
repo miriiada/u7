@@ -13,11 +13,14 @@ const formatted = original[0].toUpperCase() + original.slice(1).toLowerCase();
     console.log(original + ' ' + formatted);
 }
 
+let count = 0;
+
 for (let i = 0; i < names.length; i++) {
-    if (names[i][0] === 'К') {
-        console.log(i);
+    if (names[i][0].toUpperCase() === 'К') {
+        console.log(names[i]); count++;
     }
 }
+console.log(`Найдено кол-во К: ${count}`);
 
 // ---
 // Дополнительно: посчитай, сколько имён начинается на букву 'К' (учти регистр)
