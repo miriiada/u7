@@ -19,4 +19,6 @@ const OPV_RATE = 0.10;
 const IPN_RATE = 0.10;
 
 
-console.log(employees[1])
+for (let i = 0;  i < employees.length; i++) {
+    console.log((i + 1) + '. ' + employees[i] + ': ' + salaries[i] + ' kzt');
+}
