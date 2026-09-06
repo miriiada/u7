@@ -26,4 +26,14 @@ if (!found) {
 // Какой цикл удобнее для этой задачи? Почему?
 
 
-for ()
+for (let i = 0; i < employees.length; i++) {
+    if (salaries[i] > threshold) {
+        console.log('Найден: ' + employees[i] + ' — ' + salaries[i] + ' тг');
+        found = true;
+        break;
+    }
+}
+
+if (!found) {
+    console.log('Сотрудников с окладом больше ' + threshold + ' не найдено');
+}
