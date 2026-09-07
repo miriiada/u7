@@ -18,8 +18,6 @@ const workDays = {
     Козлова: 20,
 };
 
-for (let variable of employees.values()) {
-    if (variable in salaries[variable]) {
-    console.log
-    }
+for (let employee of employees) {
+    console.log(`${employee}: ${salaries[employee]}`);
 }
