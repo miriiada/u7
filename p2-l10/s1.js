@@ -1,3 +1,7 @@
+const WORK_DAYS_IN_MONTH = 22;
+const OPV_RATE = 0.10;
+const IPN_RATE = 0.10;
+
 const employees = ['Иванов', 'Петрова', 'Сидоров', 'Козлова'];
 
 const salaries = {
@@ -14,11 +18,8 @@ const workDays = {
     Козлова: 20,
 };
 
-const WORK_DAYS_IN_MONTH = 22;
-const OPV_RATE = 0.10;
-const IPN_RATE = 0.10;
-
-
-for (let i = 0;  i < employees.length; i++) {
-    console.log((i + 1) + '. ' + employees[i] + ': ' + salaries[i] + ' kzt');
+for (let variable of employees.values()) {
+    if (variable in salaries[variable]) {
+    console.log
+    }
 }
