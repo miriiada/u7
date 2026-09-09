@@ -25,24 +25,33 @@ let totalOPV = 0;
 let totalIPN = 0;
 let totalNet = 0;
 let fullMonthCount = 0;
+const fullMonthEmployees = [];
 
 console.log('Employee | Salary | Accrued | OPV | IPN | Take Home Pay');
 
 for (const employee of employees) {
-    const accrued = Math.round(salaries[employee] / WORK_DAYS_IN_MONTH * workDays[employee]);
-    const accruedOpv = Math.round(accrued * OPV_RATE);
-    const accruedIPN = Math.round((accrued - accruedOpv) * IPN_RATE);
-    const takeHomePay = Math.round(accrued - accruedOpv - accruedIPN);
 
-    totalPayroll += accrued;
-    totalOPV += accruedOpv;
-    totalIPN += accruedIPN;
-    totalNet += takeHomePay;
-    if (WORK_DAYS_IN_MONTH === workDays[employee]) {
-        fullMonthCount++;
+    if (employee in workDays && employee in salaries) {
+        const accrued = Math.round(salaries[employee] / WORK_DAYS_IN_MONTH * workDays[employee]);
+        const accruedOpv = Math.round(accrued * OPV_RATE);
+        const accruedIPN = Math.round((accrued - accruedOpv) * IPN_RATE);
+        const takeHomePay = Math.round(accrued - accruedOpv - accruedIPN);
+
+        totalPayroll += accrued;
+        totalOPV += accruedOpv;
+        totalIPN += accruedIPN;
+        totalNet += takeHomePay;
+
+        if (WORK_DAYS_IN_MONTH === workDays[employee]) {
+            fullMonthCount++;
+            fullMonthEmployees.push(employee);
+        }
+
+        console.log(`${employee} | ${salaries[employee]} | ${accrued} | ${accruedOpv} | ${accruedIPN} | ${takeHomePay}`);
+
+    } else {
+        console.log('The employee is absent')
     }
-
-    console.log(`${employee} | ${salaries[employee]} | ${accrued} | ${accruedOpv} | ${accruedIPN} | ${takeHomePay}`);
 
 }
 console.log('\n');
@@ -51,6 +60,4 @@ console.log(`Total payroll fund: | ${totalPayroll}`);
 console.log(`Total mandatory social tax withheld | ${totalOPV}`);
 console.log(`Total personal income tax withheld | ${totalIPN}`);
 console.log(`Total payment | ${totalNet}`);
-console.log(`Employee on full month count | ${fullMonthCount}`);
-
-
+console.log(`Employee on full month count | ${fullMonthCount} ${fullMonthEmployees} `);
