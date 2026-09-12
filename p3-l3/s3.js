@@ -12,3 +12,7 @@
 function calcDiscount(price, percent) {
 
 }
+
+function calcVat(price) {
+    
+}
