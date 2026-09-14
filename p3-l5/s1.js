@@ -1,1 +1,3 @@
-main
+function calcVat2(price) {
+    
+}
