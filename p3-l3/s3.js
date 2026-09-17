@@ -12,7 +12,7 @@ const discountPercent = 10;
 
 
 function calcDiscount(price, percent) {
-    let discountAmount = price * percent / 100 ;
+    const discountAmount = price * percent / 100 ;
     return price - discountAmount;
 }
 
@@ -22,13 +22,8 @@ function calcVat(price) {
 
 function calcFinalPrice(price, discountPercent) {
     const discountPrice = calcDiscount(price, discountPercent);
-    return discountPrice;
+    return calcVat(discountPrice);
 }
 
-// calcDiscount(10000, 10000);
+console.log(calcFinalPrice(10000, 10));
 
-// console.log(calcDiscount(10000, 10));
-// console.log(calcVat(10000));
-// console.log(discountPercent);
-console.log(discountPrice);
-console.log(calcFinalPrice());

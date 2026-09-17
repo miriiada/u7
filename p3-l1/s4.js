@@ -8,4 +8,4 @@ function repeat(text, count = 3) {
 
 console.log(repeat('Go', 2));
 console.log(repeat('JS'));
-console.log(repeat('Hi', 0
+console.log(repeat('Hi', 0));
