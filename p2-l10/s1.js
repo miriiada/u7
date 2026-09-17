@@ -56,7 +56,7 @@ for (const employee of employees) {
 }
 console.log('\n');
 console.log(`Metric | Expectation`);
-console.log(`Total payroll fund: | ${totalPayroll}`);
+console.log(`Total payroll fund | ${totalPayroll}`);
 console.log(`Total mandatory social tax withheld | ${totalOPV}`);
 console.log(`Total personal income tax withheld | ${totalIPN}`);
 console.log(`Total payment | ${totalNet}`);
