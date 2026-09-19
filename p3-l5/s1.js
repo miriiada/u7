@@ -64,8 +64,10 @@ function calcDepartment (department, salaries, workDays, calendar) {
     for (const employee of department.employees) {
         const employeeValue = calcEmployee(employee, salaries[employee], workDays[employee]);
         employeeResults.push(employeeValue);
+
     }
 }
 
 console.log(calcEmployee('Иванов', 500000, 20));
 
+main();
