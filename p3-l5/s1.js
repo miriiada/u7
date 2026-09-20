@@ -34,6 +34,8 @@ const taxConfig = {
     IPN_RATE: 0.10,
 };
 
+const widths = {};
+
 const COLUMNS = [
     ['name',    'Сотрудник'],
     ['salary',  'Оклад'],
@@ -42,7 +44,6 @@ const COLUMNS = [
     ['held',    'Удержано'],
     ['net',     'На руки'],
 ];
-
 
 
 function calcAccrued (salary, daysWorked, workDaysInMonth) {
@@ -62,7 +63,15 @@ function calcEmployee (name, salary, daysWorked) {
    const opv = calcOpv(accrued);
    const ipn = calcIpn(accrued, opv);
    const net = accrued - opv - ipn;
-   return {name, salary, daysWorked, accrued, opv, ipn, net};
+   return {
+       name,
+       salary,
+       days: daysWorked,
+       accrued,
+       opv,
+       ipn,
+       net};
+
 }
 
 function calcDepartment (department, salaries, workDays, calendar) {
@@ -82,12 +91,12 @@ function calcDepartment (department, salaries, workDays, calendar) {
         totalIPN += employeeValue.ipn;
         totalNet += employeeValue.net;
 
-        if (employeeValue.daysWorked === calendar.workDaysInMonth) {
+        if (employeeValue.days === calendar.workDaysInMonth) {
             fullMonthCount++;
         }
     }
     return {
-        employeeResults,
+        employees: employeeResults,
         totalPayroll,
         totalOPV,
         totalIPN,
@@ -96,14 +105,14 @@ function calcDepartment (department, salaries, workDays, calendar) {
         departmentName: department.name,
         month: calendar.month,
     }
-    const departmentResult = calcDepartment(
-        department,
-        salaries,
-        workDays,
-        calendar
-    );
-    const discountPrice = calcDiscount(price, discountPercent);
 }
+
+const departmentResult = calcDepartment(
+    department,
+    salaries,
+    workDays,
+    calendar
+);
 
 function formatMoney(amount) {
     return amount.toLocaleString('ru-RU') + 'тг.';
@@ -116,12 +125,12 @@ function renderToText(result) {
     text += `Сотрудник | Оклад | Дней | Начислено | Удержано | На руки\n`;
     text += `---\n`;
 
-    for (const employee of result.employeeResults) {
+    for (const employee of result.employees) {
         const withheld = employee.opv + employee.ipn;
 
         text += `${employee.name} | `;
         text += `${formatMoney(employee.salary)} | `;
-        text += `${employee.daysWorked} | `;
+        text += `${employee.days} | `;
         text += `${formatMoney(employee.accrued)} | `;
         text += `${formatMoney(withheld)} | `;
         text += `${formatMoney(employee.net)}\n`;
@@ -138,16 +147,141 @@ function renderToText(result) {
     return text;
 }
 
+function padRight(text, width) {
+    let result = String(text);
+
+    while (result.length < width) {
+        result += ' ';
+    }
+
+    return result;
+}
+
+function padLeft(text, width) {
+    let result = String(text);
+
+    while (result.length < width) {
+        result = ' ' + result;
+    }
+
+    return result;
+}
+
+function calcColumnWidths(employees) {
+    const widths = {};
+
+    // Сначала ширина каждого столбца равна длине его заголовка
+    for (const [key, header] of COLUMNS) {
+        widths[key] = header.length;
+    }
+
+    // Теперь проверяем реальные данные сотрудников
+    for (const employee of employees) {
+        for (const [key] of COLUMNS) {
+            let value;
+
+            if (key === 'name') {
+                value = employee.name;
+            } else if (key === 'salary') {
+                value = formatMoney(employee.salary);
+            } else if (key === 'days') {
+                value = String(employee.days);
+            } else if (key === 'accrued') {
+                value = formatMoney(employee.accrued);
+            } else if (key === 'held') {
+                value = formatMoney(employee.opv + employee.ipn);
+            } else if (key === 'net') {
+                value = formatMoney(employee.net);
+            }
+
+            if (value.length > widths[key]) {
+                widths[key] = value.length;
+            }
+        }
+    }
+
+    return widths;
+}
+
+function renderToText(result) {
+    const widths = calcColumnWidths(result.employees);
+
+    let text = `Ведомость: ${result.departmentName}\n`;
+    text += `Месяц: ${result.month}\n`;
+
+    // Заголовок таблицы
+    const headerCells = [];
+
+    for (const [key, header] of COLUMNS) {
+        headerCells.push(padRight(header, widths[key]));
+    }
+
+    text += headerCells.join(' | ') + '\n';
+
+    // Разделительная линия
+    const separatorCells = [];
+
+    for (const [key] of COLUMNS) {
+        separatorCells.push('-'.repeat(widths[key]));
+    }
+
+    text += separatorCells.join('-|-') + '\n';
+
+    // Строки сотрудников
+    for (const employee of result.employees) {
+        const rowCells = [];
+
+        for (const [key] of COLUMNS) {
+            let value;
+
+            if (key === 'name') {
+                value = employee.name;
+                rowCells.push(padRight(value, widths[key]));
+            } else if (key === 'salary') {
+                value = formatMoney(employee.salary);
+                rowCells.push(padLeft(value, widths[key]));
+            } else if (key === 'days') {
+                value = String(employee.days);
+                rowCells.push(padLeft(value, widths[key]));
+            } else if (key === 'accrued') {
+                value = formatMoney(employee.accrued);
+                rowCells.push(padLeft(value, widths[key]));
+            } else if (key === 'held') {
+                value = formatMoney(employee.opv + employee.ipn);
+                rowCells.push(padLeft(value, widths[key]));
+            } else if (key === 'net') {
+                value = formatMoney(employee.net);
+                rowCells.push(padLeft(value, widths[key]));
+            }
+        }
+
+        text += rowCells.join(' | ') + '\n';
+    }
+
+    // Итоги
+    text += '\nИТОГО по отделу:\n';
+    text += `  Фонд начислений: ${formatMoney(result.totalPayroll)}\n`;
+    text += `  Удержано ОПВ: ${formatMoney(result.totalOPV)}\n`;
+    text += `  Удержано ИПН: ${formatMoney(result.totalIPN)}\n`;
+    text += `  К выплате: ${formatMoney(result.totalNet)}\n`;
+    text += `  Полный месяц: ${result.fullMonthCount} чел.`;
+
+    return text;
+}
 
 
 
 function main() {
-    const result = calcDepartment(department, salaries, workDays, calendar);
+    const result = calcDepartment(
+        department,
+        salaries,
+        workDays,
+        calendar
+    );
+
     const text = renderToText(result);
 
     console.log(text);
 }
 
-
 main();
-
